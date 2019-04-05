@@ -114,6 +114,34 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->FL = 0b00000100; // less than flag set
       break;
     }
+
+  case ALU_AND:
+    cpu->registers[regA] = cpu->registers[regA] & cpu->registers[regB];
+    break;
+
+  case ALU_OR:
+    cpu->registers[regA] = cpu->registers[regA] | cpu->registers[regB];
+    break;
+
+  case ALU_XOR:
+    cpu->registers[regA] = cpu->registers[regA] ^ cpu->registers[regB];
+    break;
+
+  case ALU_NOT:
+    cpu->registers[regA] = ~cpu->registers[regA];
+    break;
+
+  case ALU_SHL:
+    cpu->registers[regA] = cpu->registers[regA] << cpu->registers[regB];
+    break;
+
+  case ALU_SHR:
+    cpu->registers[regA] = cpu->registers[regA] >> cpu->registers[regB];
+    break;
+
+  case ALU_MOD:
+    cpu->registers[regA] = cpu->registers[regA] % cpu->registers[regB];
+    break;
   }
 }
 
@@ -178,6 +206,34 @@ void cpu_run(struct cpu *cpu)
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
 
+    case AND:
+      alu(cpu, ALU_AND, operandA, operandB);
+      break;
+
+    case OR:
+      alu(cpu, ALU_OR, operandA, operandB);
+      break;
+
+    case XOR:
+      alu(cpu, ALU_XOR, operandA, operandB);
+      break;
+
+    case NOT:
+      alu(cpu, ALU_NOT, operandA, operandB);
+      break;
+
+    case SHL:
+      alu(cpu, ALU_SHL, operandA, operandB);
+      break;
+
+    case SHR:
+      alu(cpu, ALU_SHR, operandA, operandB);
+      break;
+
+    case MOD:
+      alu(cpu, ALU_MOD, operandA, operandB);
+      break;
+
     case PUSH:
       stack_push(cpu, cpu->registers[operandA]);
       break;
@@ -240,7 +296,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
-  cpu->FL = 0b00000000;
+  cpu->FL = 0;
   //  FL bits: 00000LGE
   // L Less-than: during a CMP, set to 1 if registerA is less than registerB, zero otherwise.
   // G Greater-than: during a CMP, set to 1 if registerA is greater than registerB, zero otherwise.
