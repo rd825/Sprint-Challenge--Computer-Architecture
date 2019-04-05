@@ -173,6 +173,11 @@ void cpu_run(struct cpu *cpu)
       alu(cpu, ALU_ADD, operandA, operandB);
       break;
 
+    // use the ALU to compare OpA and OpB
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
+
     case PUSH:
       stack_push(cpu, cpu->registers[operandA]);
       break;
@@ -190,17 +195,27 @@ void cpu_run(struct cpu *cpu)
       ret(cpu);
       continue;
 
-    case CMP:
-      alu(cpu, ALU_CMP, operandA, operandB);
-      break;
-
+    // Jump to the address stored in the given register.
     case JMP:
-      break;
+      cpu->PC = cpu->registers[operandA];
+      continue;
 
+    //If equal flag is set (true), jump to the address stored in the given register.
     case JEQ:
+      if (cpu->FL == 0b00000001)
+      {
+        cpu->PC = cpu->registers[operandA];
+        continue;
+      }
       break;
 
+    // If E flag is clear (false, 0), jump to the address stored in the given register.
     case JNE:
+      if (cpu->FL != 0b00000001)
+      {
+        cpu->PC = cpu->registers[operandA];
+        continue;
+      }
       break;
 
     // Halt the CPU (and exit the emulator).
