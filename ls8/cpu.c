@@ -97,6 +97,23 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_ADD:
     cpu->registers[regA] = cpu->registers[regA] + cpu->registers[regB]; // ADD regA + regB
     break;
+
+  case ALU_CMP:
+    if (cpu->registers[regA] == cpu->registers[regB])
+    {
+      cpu->FL = 0b00000001; // equal flag set
+      break;
+    }
+    else if (cpu->registers[regA] > cpu->registers[regB])
+    {
+      cpu->FL = 0b00000010; // greater than flag set
+      break;
+    }
+    else
+    {
+      cpu->FL = 0b00000100; // less than flag set
+      break;
+    }
   }
 }
 
@@ -173,6 +190,19 @@ void cpu_run(struct cpu *cpu)
       ret(cpu);
       continue;
 
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
+
+    case JMP:
+      break;
+
+    case JEQ:
+      break;
+
+    case JNE:
+      break;
+
     // Halt the CPU (and exit the emulator).
     case HLT:
       running = 0;
@@ -195,7 +225,11 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
-  cpu->FL = 0;
+  cpu->FL = 0b00000000;
+  //  FL bits: 00000LGE
+  // L Less-than: during a CMP, set to 1 if registerA is less than registerB, zero otherwise.
+  // G Greater-than: during a CMP, set to 1 if registerA is greater than registerB, zero otherwise.
+  // E Equal: during a CMP, set to 1 if registerA is equal to registerB, zero otherwise.
 
   memset(cpu->registers, 0, sizeof(cpu->registers));
   memset(cpu->ram, 0, sizeof(cpu->ram));
