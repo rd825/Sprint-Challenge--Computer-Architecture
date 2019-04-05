@@ -31,7 +31,8 @@ enum alu_op
 {
   // Add more here
   ALU_MUL,
-  ALU_ADD
+  ALU_ADD,
+  ALU_CMP
 };
 
 // Instructions
@@ -47,6 +48,7 @@ enum alu_op
 // ALU
 #define MUL 0b10100010 // ALU MULTIPLY
 #define ADD 0b10100000 // ALU ADD
+#define CMP 0b10100111 // ALU COMPARE
 
 // STACK
 #define PUSH 0b01000101 // STACK PUSH
@@ -55,6 +57,11 @@ enum alu_op
 // SUBROUTINE RELATED
 #define CALL 0b01010000 // CALL SUBROUTINE
 #define RET 0b00010001  // RETURN FROM SUBROUTINE
+
+// JUMP
+#define JMP 0b01010100 // Jump to the address stored in the given register; set the PC to the address stored in the given register.
+#define JEQ 0b01010101 // If equal flag is set (true), jump to the address stored in the given register.
+#define JNE 0b01010110 // If E flag is clear (false, 0), jump to the address stored in the given register.
 
 // Function declarations
 extern void cpu_load(struct cpu *cpu, char *filepath); // filepath from argv[1]
