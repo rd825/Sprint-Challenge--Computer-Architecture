@@ -231,6 +231,11 @@ void cpu_run(struct cpu *cpu)
       break;
 
     case MOD:
+      if (operandB = 0)
+      {
+        fprintf(stderr, "Error: attempt to divide by zero");
+        break;
+      }
       alu(cpu, ALU_MOD, operandA, operandB);
       break;
 
